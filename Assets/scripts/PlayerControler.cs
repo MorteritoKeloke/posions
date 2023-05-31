@@ -4,69 +4,58 @@ using UnityEngine;
 
 public class PlayerControler : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Velocidad de movimiento del personaje
-    public float jumpForce = 5f; // Fuerza del salto
-    public float runSpeedMultiplier = 1.5f; // Multiplicador de velocidad al correr
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 1.5f;
 
-    private bool isJumping = false; // Indica si el personaje está saltando
-    private bool isRunning = false; // Indica si el personaje está corriendo
+    public Rigidbody rb;
+    public float jumpForce = 8f;
+    private bool isJumping = false;
+    Animator anim;
 
-    private Rigidbody rb;
+    private int score; //canva
+    private int plusPoints = 10;
 
-    private void Start()
+    private bool GameOver;
+
+    void Start()
     {
+        GameOver = false;
+        score=0; 
+
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+
+     
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
-    private void Update()
+    void Update()
     {
-        // Movimiento horizontal
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        // Movimiento vertical
-        float moveVertical = Input.GetAxis("Vertical");
+       
+        float moveInput = Input.GetAxis("Vertical");
+        transform.Translate(Vector3.forward * moveInput * moveSpeed * Time.deltaTime);
 
-        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical);
+        
+        float rotationInput = Input.GetAxis("Horizontal");
+        transform.Rotate(Vector3.up * rotationInput * rotationSpeed * Time.deltaTime);
 
-        // Aplicar multiplicador de velocidad al correr
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            movement *= runSpeedMultiplier;
-            isRunning = true;
+            Jump();
         }
-        else
-        {
-            isRunning = false;
-        }
+    }
 
-        // Mover al personaje
-        rb.velocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
-
-        // Saltar
-        if (Input.GetButtonDown("Jump") && !isJumping)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isJumping = true;
-        }
-
-        // Dar golpes
-        if (Input.GetMouseButtonDown(1))
-        {
-            // Lógica para dar golpes
-            Attack();
-        }
+    private void Jump()
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        isJumping = true;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Comprobar si el personaje ha aterrizado después de un salto
         if (collision.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
         }
-    }
-
-    private void Attack()
-    {
-        // Lógica para el ataque
     }
 }
