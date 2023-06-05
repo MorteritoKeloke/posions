@@ -10,22 +10,13 @@ public class PlayerControler : MonoBehaviour
     public Rigidbody rb;
     public float jumpForce = 8f;
     private bool isJumping = false;
-    Animator anim;
-
-    private int score; //canva
-    private int plusPoints = 10;
 
     private bool GameOver;
 
     void Start()
     {
-        GameOver = false;
-        score=0; 
-
-        anim = GetComponent<Animator>();
+        GameOver = false; 
         rb = GetComponent<Rigidbody>();
-
-     
         Cursor.lockState = CursorLockMode.Confined;
     }
 
