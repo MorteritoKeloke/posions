@@ -22,4 +22,9 @@ public class ScenceLoader : MonoBehaviour
     {
         SceneManager.LoadScene(MainMenu);
     }
+
+    public void Salir()
+    {
+        Application.Quit();
+    }
 }
